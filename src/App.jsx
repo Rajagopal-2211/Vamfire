@@ -3,13 +3,13 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Menu from "./pages/Menu";
 import Cart from "./pages/Cart";
+import OrderSuccess from "./pages/OrderSuccess";
 
 import { CartProvider } from "./context/CartContext";
 
 function App() {
 
     return (
-
         <CartProvider>
 
             <BrowserRouter>
@@ -28,12 +28,16 @@ function App() {
                         element={<Cart />}
                     />
 
+                    <Route
+                        path="/order-success"
+                        element={<OrderSuccess />}
+                    />
+
                 </Routes>
 
             </BrowserRouter>
 
         </CartProvider>
-
     );
 }
 

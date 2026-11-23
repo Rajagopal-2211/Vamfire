@@ -1,5 +1,12 @@
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Trash2, ShoppingBag, Plus, Minus } from "lucide-react";
+
+import {
+    ArrowLeft,
+    Trash2,
+    ShoppingBag,
+    Plus,
+    Minus
+} from "lucide-react";
 
 import { useCart } from "../context/CartContext";
 
@@ -18,6 +25,57 @@ function Cart() {
         totalAmount
     } = useCart();
 
+
+    // PLACE ORDER FUNCTION
+
+    const handlePlaceOrder = () => {
+
+        if (cartItems.length === 0) {
+            return;
+        }
+
+        // Generate unique token number
+        const tokenNumber =
+            "VF" +
+            Date.now().toString().slice(-6) +
+            Math.floor(1000 + Math.random() * 9000);
+
+        // Create order receipt
+        const order = {
+
+            tokenNumber: tokenNumber,
+
+            items: cartItems.map(item => ({
+                ...item
+            })),
+
+            totalItems: totalItems,
+
+            totalAmount: totalAmount,
+
+            orderDate: new Date().toLocaleString("en-IN"),
+
+            status: "Order Placed Successfully"
+
+        };
+
+        // Save order in browser
+        localStorage.setItem(
+            "vamfire-last-order",
+            JSON.stringify(order)
+        );
+
+        // Empty the shopping cart
+        clearCart();
+
+        // Navigate to confirmation page
+        navigate("/order-success", {
+            state: { order }
+        });
+
+    };
+
+
     return (
 
         <section className="cart-page">
@@ -30,9 +88,12 @@ function Cart() {
 
                     <h1>Your Shopping Cart</h1>
 
-                    <span>Review your delicious selection.</span>
+                    <span>
+                        Review your delicious selection.
+                    </span>
 
                 </div>
+
 
                 {cartItems.length === 0 ? (
 
@@ -42,7 +103,9 @@ function Cart() {
 
                         <h2>Your cart is empty!</h2>
 
-                        <p>Add your favourite VAMFIRE food items.</p>
+                        <p>
+                            Add your favourite VAMFIRE food items.
+                        </p>
 
                         <button onClick={() => navigate("/")}>
                             Explore Menu
@@ -58,29 +121,30 @@ function Cart() {
 
                             {cartItems.map(item => (
 
-                                <div className="cart-item" key={item.id}>
+                                <div
+                                    className="cart-item"
+                                    key={item.id}
+                                >
 
                                     <img
                                         src={item.image}
                                         alt={item.name}
-                                        onError={(event) => {
-                                            event.currentTarget.onerror = null;
-                                            event.currentTarget.src =
-                                                "/images/burger1.jpg";
-                                        }}
                                     />
 
                                     <div className="cart-item-info">
 
                                         <h3>{item.name}</h3>
 
-                                        <p>₹{item.price} per item</p>
+                                        <p>
+                                            ₹{item.price} per item
+                                        </p>
 
                                         <strong>
                                             ₹{item.price * item.quantity}
                                         </strong>
 
                                     </div>
+
 
                                     <div className="cart-quantity">
 
@@ -92,7 +156,9 @@ function Cart() {
                                             <Minus size={16} />
                                         </button>
 
-                                        <span>{item.quantity}</span>
+                                        <span>
+                                            {item.quantity}
+                                        </span>
 
                                         <button
                                             onClick={() =>
@@ -104,10 +170,12 @@ function Cart() {
 
                                     </div>
 
+
                                     <button
                                         className="remove-item"
-                                        onClick={() => removeItem(item.id)}
-                                        aria-label={`Remove ${item.name}`}
+                                        onClick={() =>
+                                            removeItem(item.id)
+                                        }
                                     >
                                         <Trash2 size={20} />
                                     </button>
@@ -118,38 +186,59 @@ function Cart() {
 
                         </div>
 
+
+                        {/* BILL */}
+
                         <div className="bill-card">
 
                             <h2>Order Bill</h2>
 
                             <div className="bill-row">
+
                                 <span>Total Items</span>
+
                                 <span>{totalItems}</span>
+
                             </div>
 
+
                             <div className="bill-row">
+
                                 <span>Subtotal</span>
+
                                 <span>₹{totalAmount}</span>
+
                             </div>
+
 
                             <div className="bill-divider"></div>
 
+
                             <div className="bill-row bill-total">
+
                                 <span>Total Amount</span>
+
                                 <strong>₹{totalAmount}</strong>
+
                             </div>
+
 
                             <p className="bill-note">
                                 Taxes and additional charges, if applicable,
                                 will be confirmed at checkout.
                             </p>
 
+
+                            {/* PLACE ORDER BUTTON */}
+
                             <button
                                 className="checkout-button"
-                                onClick={() => alert("Checkout will be implemented in the next step.")}
+                                onClick={handlePlaceOrder}
                             >
-                                Proceed to Checkout
+                                <ShoppingBag size={19} />
+                                Place Order
                             </button>
+
 
                             <button
                                 className="clear-cart-button"
@@ -164,12 +253,16 @@ function Cart() {
 
                 )}
 
+
                 <button
                     className="cart-back-button"
                     onClick={() => navigate("/")}
                 >
+
                     <ArrowLeft size={20} />
+
                     Continue Shopping
+
                 </button>
 
             </div>

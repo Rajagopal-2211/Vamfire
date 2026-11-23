@@ -1,8 +1,10 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowLeft, ShoppingBag, Minus, Plus } from "lucide-react";
 import { motion } from "framer-motion";
+import { useCart } from "../context/CartContext";
 import "../styles/menu.css";
+
 
 const menuData = {
 
@@ -75,9 +77,20 @@ function Menu() {
     const { category } = useParams();
     const navigate = useNavigate();
 
+    const { addItems, totalItems } = useCart();
+
     const selectedCategory = menuData[category];
 
     const [quantities, setQuantities] = useState({});
+
+    useEffect(() => {
+        window.scrollTo({
+            top: 0,
+            left: 0,
+            behavior: "instant"
+        });
+        setQuantities({});
+    }, [category]);
 
     const updateQuantity = (index, change) => {
 
@@ -94,17 +107,32 @@ function Menu() {
 
     };
 
-    const totalItems = Object.values(quantities)
-        .reduce((sum, quantity) => sum + quantity, 0);
+    const selectedItems = selectedCategory
+        ? selectedCategory.items
+            .map((item, index) => ({
+                ...item,
+                id: `${category}-${item.name}`,
+                quantity: quantities[index] || 0
+            }))
+            .filter(item => item.quantity > 0)
+        : [];
 
-    const totalPrice = selectedCategory
-        ? selectedCategory.items.reduce(
-            (sum, item, index) =>
-                sum + item.price * (quantities[index] || 0),
-            0
-        )
-        : 0;
+    const totalPrice = selectedItems.reduce(
+        (sum, item) => sum + item.price * item.quantity,
+        0
+    );
 
+    const handleAddToCart = () => {
+
+        if (selectedItems.length === 0) {
+            return;
+        }
+
+        addItems(selectedItems);
+
+        navigate("/cart");
+
+    };
 
     return (
 
@@ -128,23 +156,17 @@ function Menu() {
 
                         </div>
 
-
                         <div className="menu-items">
 
                             {selectedCategory.items.map((item, index) => (
 
                                 <motion.div
                                     className="menu-card"
-                                    key={index}
-
+                                    key={item.name}
                                     initial={{ opacity: 0, y: 35 }}
-
                                     whileInView={{ opacity: 1, y: 0 }}
-
                                     viewport={{ once: true }}
-
                                     transition={{ duration: 0.5 }}
-
                                     whileHover={{ y: -7 }}
                                 >
 
@@ -162,7 +184,6 @@ function Menu() {
 
                                     </div>
 
-
                                     <div className="menu-card-content">
 
                                         <h3>{item.name}</h3>
@@ -175,7 +196,6 @@ function Menu() {
                                                 ₹{item.price}
                                             </span>
 
-
                                             <div className="quantity-control">
 
                                                 <button
@@ -183,7 +203,6 @@ function Menu() {
                                                         updateQuantity(index, -1)
                                                     }
                                                     disabled={!quantities[index]}
-                                                    aria-label="Decrease quantity"
                                                 >
                                                     <Minus size={16} />
                                                 </button>
@@ -196,7 +215,6 @@ function Menu() {
                                                     onClick={() =>
                                                         updateQuantity(index, 1)
                                                     }
-                                                    aria-label="Increase quantity"
                                                 >
                                                     <Plus size={16} />
                                                 </button>
@@ -213,28 +231,25 @@ function Menu() {
 
                         </div>
 
-
-                        {/* Order Summary */}
-
                         <div className="menu-order-summary">
 
                             <div>
                                 <span>Selected Items</span>
-                                <h3>{totalItems}</h3>
+                                <h3>
+                                    {selectedItems.reduce(
+                                        (sum, item) => sum + item.quantity, 0
+                                    )}
+                                </h3>
                             </div>
 
                             <div>
-                                <span>Total Amount</span>
+                                <span>Category Total</span>
                                 <h3>₹{totalPrice}</h3>
                             </div>
 
                             <button
-                                onClick={() => {
-                                    alert(
-                                        `${totalItems} items selected. Total: ₹${totalPrice}`
-                                    );
-                                }}
-                                disabled={totalItems === 0}
+                                onClick={handleAddToCart}
+                                disabled={selectedItems.length === 0}
                             >
                                 <ShoppingBag size={18} />
                                 Add to Cart
@@ -242,21 +257,24 @@ function Menu() {
 
                         </div>
 
-
-                        {/* Back Button at Bottom */}
-
                         <div className="menu-back-container">
 
                             <button
                                 className="back-button"
                                 onClick={() => navigate("/")}
                             >
-
                                 <ArrowLeft size={20} />
-
                                 Back to Home
-
                             </button>
+
+                            {totalItems > 0 && (
+                                <button
+                                    className="back-button"
+                                    onClick={() => navigate("/cart")}
+                                >
+                                    View Cart ({totalItems})
+                                </button>
+                            )}
 
                         </div>
 
@@ -272,7 +290,6 @@ function Menu() {
                             className="back-button"
                             onClick={() => navigate("/")}
                         >
-                            <ArrowLeft size={20} />
                             Back to Home
                         </button>
 

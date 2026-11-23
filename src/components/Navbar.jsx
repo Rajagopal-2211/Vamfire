@@ -1,7 +1,12 @@
 import { ShoppingBag, Menu } from "lucide-react";
+import { Link } from "react-router-dom";
+import { useCart } from "../context/CartContext";
 import "../styles/navbar.css";
 
 function Navbar() {
+
+    const { totalItems } = useCart();
+
     return (
         <nav className="navbar">
 
@@ -13,21 +18,23 @@ function Navbar() {
             </div>
 
             <div className="nav-links">
-                <a href="/">Home</a>
-                <a href="#categories">Menu</a>
-                <a href="#featured">Popular</a>
-                <a href="#about">About</a>
+                <Link to="/">Home</Link>
+                <Link to="/#categories">Menu</Link>
+                <a href="/#featured">Popular</a>
+                <a href="/#about">About</a>
             </div>
 
             <div className="nav-actions">
-                <button className="cart-btn">
+
+                <Link to="/cart" className="cart-btn">
                     <ShoppingBag size={20} />
-                    <span>0</span>
-                </button>
+                    <span>{totalItems}</span>
+                </Link>
 
                 <button className="mobile-menu">
                     <Menu size={25} />
                 </button>
+
             </div>
 
         </nav>

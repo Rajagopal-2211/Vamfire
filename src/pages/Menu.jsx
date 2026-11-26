@@ -161,13 +161,18 @@ function Menu() {
                             {selectedCategory.items.map((item, index) => (
 
                                 <motion.div
-                                    className="menu-card"
-                                    key={item.name}
-                                    initial={{ opacity: 0, y: 35 }}
-                                    whileInView={{ opacity: 1, y: 0 }}
-                                    viewport={{ once: true }}
-                                    transition={{ duration: 0.5 }}
-                                    whileHover={{ y: -7 }}
+    className="menu-card"
+    key={item.name}
+    onClick={() => navigate(`/food/${category}/${index}`)}
+    style={{ cursor: "pointer" }}
+    role="link"
+    tabIndex={0}
+    onKeyDown={(event) => {
+        if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            navigate(`/food/${category}/${index}`);
+        }
+    }}
                                 >
 
                                     <div className="menu-card-image">

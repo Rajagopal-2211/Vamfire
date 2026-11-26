@@ -2,43 +2,33 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Home from "./pages/Home";
 import Menu from "./pages/Menu";
+import FoodDetails from "./pages/FoodDetails";
 import Cart from "./pages/Cart";
 import OrderSuccess from "./pages/OrderSuccess";
 
 import { CartProvider } from "./context/CartContext";
 
 function App() {
+  return (
+    <CartProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Home />} />
 
-    return (
-        <CartProvider>
+          <Route path="/categories/:category" element={<Menu />} />
 
-            <BrowserRouter>
+          <Route
+            path="/food/:category/:itemId"
+            element={<FoodDetails />}
+          />
 
-                <Routes>
+          <Route path="/cart" element={<Cart />} />
 
-                    <Route path="/" element={<Home />} />
-
-                    <Route
-                        path="/categories/:category"
-                        element={<Menu />}
-                    />
-
-                    <Route
-                        path="/cart"
-                        element={<Cart />}
-                    />
-
-                    <Route
-                        path="/order-success"
-                        element={<OrderSuccess />}
-                    />
-
-                </Routes>
-
-            </BrowserRouter>
-
-        </CartProvider>
-    );
+          <Route path="/order-success" element={<OrderSuccess />} />
+        </Routes>
+      </BrowserRouter>
+    </CartProvider>
+  );
 }
 
 export default App;

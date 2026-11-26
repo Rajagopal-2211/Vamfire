@@ -314,3 +314,43 @@
     }
 
 }
+.food-detail-price {
+    color: #ff5a1f;
+    font-size: 28px;
+    font-weight: 900;
+    margin: 10px 0 15px;
+}
+
+.ingredient-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.ingredient-list span {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    background: #202020;
+    border: 1px solid #383838;
+    color: #dddddd;
+    padding: 10px 13px;
+    border-radius: 8px;
+    font-size: 12px;
+}
+
+.ingredient-list svg {
+    color: #ff5a1f;
+    flex-shrink: 0;
+}
+
+.add-to-cart-btn {
+    cursor: pointer;
+    opacity: 1;
+    transition: 0.3s ease;
+}
+
+.add-to-cart-btn:hover {
+    background: #e94810;
+    transform: translateY(-2px);
+}

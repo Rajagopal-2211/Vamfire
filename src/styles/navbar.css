@@ -101,3 +101,9 @@
     }
 
 }
+.navbar-logo {
+  width: 65px;
+  height: 55px;
+  object-fit: contain;
+  display: block;
+}

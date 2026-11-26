@@ -12,9 +12,11 @@ function Navbar() {
 
             <div className="nav-logo">
                 <img
-                    src="/images/logo/vamfire-logo.png"
-                    alt="VAMFIRE Official Logo"
+                src="/logo/vamfire-logo.png"
+                alt="VAMFIRE Logo"
+                className="navbar-logo"
                 />
+                <h1>VamFire</h1>
             </div>
 
             <div className="nav-links">
